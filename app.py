@@ -18,7 +18,7 @@ def home():
     return render_template('index.html')
 
 def draw_square(step):
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(10, 10)) #increse figure size
     ax.set_xlim(-3, 3)
     ax.set_ylim(-3, 3)
     ax.set_aspect(1)
