@@ -1,9 +1,13 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Response
 import numpy as np
 import matplotlib.pyplot as plt
 import io
 import base64
 import os
+
+# Set Matplotlib to non-GUI backend
+import matplotlib
+matplotlib.use('Agg')
 
 app = Flask(__name__)
 
@@ -24,20 +28,20 @@ def draw_square(step):
     W, E = (-2, 0), (2, 0)  # West and East points
     M = ((W[0] + E[0]) / 2, (W[1] + E[1]) / 2)  # Midpoint
     N, S = (0, 2), (0, -2)  # North and South intersection points
-    P, Q, R, S = (-2, 2), (2, 2), (2, -2), (-2, -2)  # Square corners
+    P1, P2, P3, P4 = (-2, 2), (2, 2), (2, -2), (-2, -2)  # Square corners
 
     # Step 1: Draw base line
     ax.plot([W[0], E[0]], [W[1], E[1]], 'k-', linewidth=2, label="Base Line EW")
 
     # Step 2: Draw midpoint circle
     if step >= 2:
-        circle_main = plt.Circle(M, abs(E[0] - M[0]), fill=False, linestyle='dashed')
+        circle_main = plt.Circle(M, abs(E[0] - M[0]), fill=False, linestyle='dashed', edgecolor='blue')
         ax.add_patch(circle_main)
 
     # Step 3: Draw circles from W and E
     if step >= 3:
-        circle_w = plt.Circle(W, abs(E[0] - M[0]), fill=False, linestyle='dashed')
-        circle_e = plt.Circle(E, abs(E[0] - M[0]), fill=False, linestyle='dashed')
+        circle_w = plt.Circle(W, abs(E[0] - M[0]), fill=False, linestyle='dashed', edgecolor='green')
+        circle_e = plt.Circle(E, abs(E[0] - M[0]), fill=False, linestyle='dashed', edgecolor='green')
         ax.add_patch(circle_w)
         ax.add_patch(circle_e)
 
@@ -47,26 +51,26 @@ def draw_square(step):
 
     # Step 5: Draw circles from N and S
     if step >= 5:
-        circle_n = plt.Circle(N, abs(E[0] - M[0]), fill=False, linestyle='dashed')
-        circle_s = plt.Circle(S, abs(E[0] - M[0]), fill=False, linestyle='dashed')
+        circle_n = plt.Circle(N, abs(E[0] - M[0]), fill=False, linestyle='dashed', edgecolor='orange')
+        circle_s = plt.Circle(S, abs(E[0] - M[0]), fill=False, linestyle='dashed', edgecolor='orange')
         ax.add_patch(circle_n)
         ax.add_patch(circle_s)
 
     # Step 6: Draw the final square (Including all previous steps)
     if step >= 6:
-        ax.plot([P[0], Q[0]], [P[1], Q[1]], 'b-', linewidth=2)
-        ax.plot([Q[0], R[0]], [Q[1], R[1]], 'b-', linewidth=2)
-        ax.plot([R[0], S[0]], [R[1], S[1]], 'b-', linewidth=2)
-        ax.plot([S[0], P[0]], [S[1], P[1]], 'b-', linewidth=2)
+        ax.plot([P1[0], P2[0]], [P1[1], P2[1]], 'b-', linewidth=2)
+        ax.plot([P2[0], P3[0]], [P2[1], P3[1]], 'b-', linewidth=2)
+        ax.plot([P3[0], P4[0]], [P3[1], P4[1]], 'b-', linewidth=2)
+        ax.plot([P4[0], P1[0]], [P4[1], P1[1]], 'b-', linewidth=2)
 
     plt.legend()
 
     # Save image to memory buffer and encode in base64
     img_io = io.BytesIO()
-    plt.savefig(img_io, format='png')
+    plt.savefig(img_io, format='png', bbox_inches='tight')
     img_io.seek(0)
     encoded_img = base64.b64encode(img_io.getvalue()).decode('utf-8')
-    plt.close()
+    plt.close(fig)  # Close figure to free memory
 
     return encoded_img
 
@@ -94,6 +98,6 @@ def generate():
         return "Shape not supported yet."
 
 if __name__ == '__main__':
-    # No need for this in production since Gunicorn will handle the process
-     port = int(os.environ.get('PORT', 5000))
-     app.run(debug=True, host='0.0.0.0', port=port) 
+    port = int(os.environ.get('PORT', 10000))  # Default Render port is 10000
+    app.run(host='0.0.0.0', port=port)  # Removed debug=True for production
+
