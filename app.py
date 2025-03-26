@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import io
 import base64
+import os
 
 app = Flask(__name__)
 
@@ -94,6 +95,5 @@ def generate():
 
 if __name__ == '__main__':
     # No need for this in production since Gunicorn will handle the process
-    # port = int(os.environ.get('PORT', 5000)) 
-    # app.run(host='0.0.0.0', port=port, debug=True)
-    pass
+     port = int(os.environ.get('PORT', 5000))
+     app.run(debug=True, host='0.0.0.0', port=port) 
