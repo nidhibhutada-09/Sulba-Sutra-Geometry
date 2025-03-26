@@ -111,59 +111,6 @@ def draw_triangle_transformation(step):
     plt.close(fig)
 
     return encoded_img
-def draw_square_to_triangle(step):
-    fig, ax = plt.subplots(figsize=(15, 15))
-    ax.set_xlim(-3, 15)
-    ax.set_ylim(-3, 20)
-    ax.set_aspect(1)
-    plt.title(f"Transforming Square to Triangle - Step {step}")
-
-    # Step 1: Draw square ABCD
-    s = 5  # Side length of the square ABCD
-    A, B = (0, 0), (s, 0)
-    C, D = (s, s), (0, s)
-    ax.plot([A[0], B[0]], [A[1], B[1]], 'k-', linewidth=2)
-    ax.plot([B[0], C[0]], [B[1], C[1]], 'k-', linewidth=2)
-    ax.plot([C[0], D[0]], [C[1], D[1]], 'k-', linewidth=2)
-    ax.plot([D[0], A[0]], [D[1], A[1]], 'k-', linewidth=2)
-
-    # Step 2: Draw diagonal BD
-    BD_length = s * np.sqrt(2)
-    B, D = (0, 0), (s, s)
-    if step >= 2:
-        ax.plot([B[0], D[0]], [B[1], D[1]], 'b-', linewidth=2, label="Diagonal BD")
-
-    # Step 3: Construct Square EFGH
-    E, F = (10, 0), (10 + BD_length, 0)
-    G, H = (10 + BD_length, BD_length), (10, BD_length)
-    if step >= 3:
-        ax.plot([E[0], F[0]], [E[1], F[1]], 'g-', linewidth=2)
-        ax.plot([F[0], G[0]], [F[1], G[1]], 'g-', linewidth=2)
-        ax.plot([G[0], H[0]], [G[1], H[1]], 'g-', linewidth=2)
-        ax.plot([H[0], E[0]], [H[1], E[1]], 'g-', linewidth=2)
-
-    # Step 4: Find midpoint J of EF
-    J = ((E[0] + F[0]) / 2, (E[1] + F[1]) / 2)
-    if step >= 4:
-        ax.plot(J[0], J[1], 'ro', markersize=5, label="Midpoint J")
-
-    # Step 5: Join JH and JG
-    if step >= 5:
-        ax.plot([J[0], H[0]], [J[1], H[1]], 'r-', linewidth=2, label="Line JH")
-        ax.plot([J[0], G[0]], [J[1], G[1]], 'r-', linewidth=2, label="Line JG")
-
-    # Step 6: Final Triangle JHG
-    if step >= 6:
-        ax.fill([J[0], H[0], G[0]], [J[1], H[1], G[1]], 'b', alpha=0.3, label="Triangle JHG")
-
-    plt.legend()
-    img_io = io.BytesIO()
-    plt.savefig(img_io, format='png', bbox_inches='tight')
-    img_io.seek(0)
-    encoded_img = base64.b64encode(img_io.getvalue()).decode('utf-8')
-    plt.close(fig)
-
-    return encoded_img
 
 def draw_trapezium_to_triangle(step):
     fig, ax = plt.subplots(figsize=(10, 10))
@@ -206,6 +153,66 @@ def draw_trapezium_to_triangle(step):
     plt.close(fig)
 
     return encoded_img
+def draw_square_to_circle(step):
+    fig, ax = plt.subplots(figsize=(10, 10))
+    ax.set_xlim(-2, 5)  # Adjust dynamically if needed
+    ax.set_ylim(-2, 5)
+    ax.set_aspect(1)
+    plt.title(f"Squaring the Circle - Step {step}")
+
+    s = 2  # Side length of square
+    A, B, C, D = (0, 0), (s, 0), (s, s), (0, s)  # Square vertices
+
+    # Step 1: Draw square ABCD
+    ax.plot([A[0], B[0]], [A[1], B[1]], 'k-', linewidth=2)
+    ax.plot([B[0], C[0]], [B[1], C[1]], 'k-', linewidth=2)
+    ax.plot([C[0], D[0]], [C[1], D[1]], 'k-', linewidth=2)
+    ax.plot([D[0], A[0]], [D[1], A[1]], 'k-', linewidth=2)
+
+    # Step 2: Draw diagonal AC
+    if step >= 2:
+        ax.plot([A[0], C[0]], [A[1], C[1]], 'b--', linewidth=2, label="Diagonal AC")
+
+    # Step 3: Find midpoint E
+    E = ((A[0] + C[0]) / 2, (A[1] + C[1]) / 2)
+    if step >= 3:
+        ax.plot(E[0], E[1], 'ro', markersize=5, label="Midpoint E")
+
+    # Step 4: Draw arc centered at E with AE radius
+    radius_AE = np.linalg.norm(np.array(A) - np.array(E))
+    if step >= 4:
+        arc = plt.Circle(E, radius_AE, fill=False, linestyle='dashed', edgecolor='green')
+        ax.add_patch(arc)
+
+    # Step 5: Find intersection F (approximation)
+    F = (E[0], E[1] + radius_AE)
+    if step >= 5:
+        ax.plot(F[0], F[1], 'bo', markersize=5, label="Point F")
+
+    # Step 6: Divide FH in 2:1 ratio to find G
+    GH = radius_AE / 3
+    FG = 2 * GH
+    G = (F[0], F[1] - FG)
+    if step >= 6:
+        ax.plot(G[0], G[1], 'go', markersize=5, label="Point G")
+
+    # Step 7: Draw circle centered at E with EG as radius
+    radius_EG = np.linalg.norm(np.array(E) - np.array(G))
+    if step >= 7:
+        circle = plt.Circle(E, radius_EG, fill=False, edgecolor='orange', linewidth=2, label="Final Circle")
+        ax.add_patch(circle)
+
+    plt.legend()
+
+    # Save image to memory buffer
+    img_io = io.BytesIO()
+    plt.savefig(img_io, format='png', bbox_inches='tight')
+    img_io.seek(0)
+    encoded_img = base64.b64encode(img_io.getvalue()).decode('utf-8')
+    plt.close(fig)
+
+    return encoded_img
+
 
 @app.route('/generate', methods=['POST'])
 def generate():
@@ -234,18 +241,19 @@ def generate():
         ]
         for i in range(1, 5):
             images.append(draw_triangle_transformation(i))
-
-    elif shape == "square_to_triangle":
+    elif shape == "square_to_circle":
         steps = [
-            "1. Draw square ABCD.",
-            "2. Draw diagonal BD.",
-            "3. Construct square EFGH.",
-            "4. Find midpoint J of EF.",
-            "5. Join JH and JG.",
-            "6. Final Triangle JHG."
-        ]
-        for i in range(1, 7):
-            images.append(draw_square_to_triangle(i))
+            "1. Construct a square ABCD.",
+            "2. Draw the diagonal AC.",
+       	    "3. Find the midpoint E of AC.",
+            "4. Draw an arc centered at E with AE as radius.",
+            "5. Identify point F where the arc meets the perpendicular bisector.",
+            "6. Divide FH in a 2:1 ratio to find G.",
+             "7. Draw a circle centered at E with EG as radius."
+    ]
+    for i in range(1, 8):
+        images.append(draw_square_to_circle(i))
+
     else:
         return "Shape not supported yet."
 
