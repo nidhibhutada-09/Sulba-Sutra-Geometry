@@ -75,7 +75,7 @@ def draw_square(step):
     return encoded_img
 
 def draw_triangle_transformation(step):
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(10, 10))
     ax.set_xlim(-1, 12)
     ax.set_ylim(-1, 12)
     ax.set_aspect(1)
@@ -86,7 +86,7 @@ def draw_triangle_transformation(step):
     # Step 1: Draw square ABCD
     ax.plot([A[0], B[0]], [A[1], B[1]], 'k-', linewidth=2)
     ax.plot([B[0], C[0]], [B[1], C[1]], 'k-', linewidth=2)
-    ax.plot([C[0], D[0]], [C[1], D[1]], 'k-', linewidth=2)
+    ax.plot([C[0], D[0]], [C[1], D[1]], 'k-'(figsize=(10, 10)), linewidth=2)
     ax.plot([D[0], A[0]], [D[1], A[1]], 'k-', linewidth=2)
 
     # Step 2: Identify midpoint M
@@ -112,7 +112,7 @@ def draw_triangle_transformation(step):
 
     return encoded_img
 def draw_square_to_triangle(step):
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(10, 10))
     ax.set_xlim(-3, 15)
     ax.set_ylim(-3, 15)
     ax.set_aspect(1)
