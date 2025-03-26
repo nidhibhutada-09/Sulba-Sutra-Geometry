@@ -93,4 +93,7 @@ def generate():
         return "Shape not supported yet."
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # No need for this in production since Gunicorn will handle the process
+    # port = int(os.environ.get('PORT', 5000)) 
+    # app.run(host='0.0.0.0', port=port, debug=True)
+    pass
