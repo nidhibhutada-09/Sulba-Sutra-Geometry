@@ -245,7 +245,7 @@ def generate():
             "6. Final Triangle JHG."
         ]
         for i in range(1, 7):
-            images.append(draw_square_to_triangle(i))     
+            images.append(draw_square_to_triangle(i))
     else:
         return "Shape not supported yet."
 
