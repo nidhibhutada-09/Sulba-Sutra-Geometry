@@ -75,7 +75,7 @@ def draw_square(step):
     return encoded_img
 
 def draw_triangle_transformation(step):
-    fig, ax = plt.subplots(figsize=(10, 10))
+    fig, ax = plt.subplots()
     ax.set_xlim(-1, 12)
     ax.set_ylim(-1, 12)
     ax.set_aspect(1)
