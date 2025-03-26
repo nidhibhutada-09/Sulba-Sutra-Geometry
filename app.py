@@ -112,9 +112,9 @@ def draw_triangle_transformation(step):
 
     return encoded_img
 def draw_square_to_triangle(step):
-    fig, ax = plt.subplots(figsize=(10, 10))
+    fig, ax = plt.subplots(figsize=(15, 15))
     ax.set_xlim(-3, 15)
-    ax.set_ylim(-3, 15)
+    ax.set_ylim(-3, 20)
     ax.set_aspect(1)
     plt.title(f"Transforming Square to Triangle - Step {step}")
 
@@ -157,6 +157,48 @@ def draw_square_to_triangle(step):
         ax.fill([J[0], H[0], G[0]], [J[1], H[1], G[1]], 'b', alpha=0.3, label="Triangle JHG")
 
     plt.legend()
+    img_io = io.BytesIO()
+    plt.savefig(img_io, format='png', bbox_inches='tight')
+    img_io.seek(0)
+    encoded_img = base64.b64encode(img_io.getvalue()).decode('utf-8')
+    plt.close(fig)
+
+    return encoded_img
+
+def draw_trapezium_to_triangle(step):
+    fig, ax = plt.subplots(figsize=(10, 10))
+    ax.set_xlim(-1, 12)
+    ax.set_ylim(-1, 12)
+    ax.set_aspect(1)
+    plt.title(f"Trapezium to Triangle - Step {step}")
+
+    # Coordinates for square EFGH and triangle ABC
+    side_length = np.sqrt(12)  # For square area = 12 (4 times area of triangle ABC)
+    A, B = (0, side_length), (side_length, side_length)
+    C, D = (side_length, 0), (0, 0)
+
+    # Step 1: Draw square ABCD
+    ax.plot([A[0], B[0]], [A[1], B[1]], 'k-', linewidth=2)
+    ax.plot([B[0], C[0]], [B[1], C[1]], 'k-', linewidth=2)
+    ax.plot([C[0], D[0]], [C[1], D[1]], 'k-', linewidth=2)
+    ax.plot([D[0], A[0]], [D[1], A[1]], 'k-', linewidth=2)
+
+    # Step 2: Identify points J, K, L, M
+    J = ((D[0] + C[0]) / 2, (D[1] + C[1]) / 2)  # Midpoint of EH
+    K = ((A[0] + B[0]) / 2, (A[1] + B[1]) / 2)  # Midpoint of FC
+    L = (A[0], (D[1] + C[1]) / 4)  # L on EF, LF = 1/4 EF
+    M = ((J[0] + K[0]) / 4, (J[1] + K[1]) / 4)  # M on JK, JM = 1/4 JK
+
+    if step >= 1:
+        ax.plot([J[0], K[0]], [J[1], K[1]], 'r-', linewidth=2, label="JK")
+        ax.plot([L[0], M[0]], [L[1], M[1]], 'g-', linewidth=2, label="LF")
+
+    # Step 3: Draw trapezium LFKM
+    if step >= 2:
+        ax.fill([L[0], M[0], K[0], J[0]], [L[1], M[1], K[1], J[1]], 'b', alpha=0.3, label="Trapezium LFKM")
+
+    plt.legend()
+
     img_io = io.BytesIO()
     plt.savefig(img_io, format='png', bbox_inches='tight')
     img_io.seek(0)
