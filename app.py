@@ -226,14 +226,15 @@ def generate():
             images.append(draw_square(i))
 
     elif shape == "triangle":
-          steps = [
-            "1. Draw a square with an area twice that of the rectangle.",
-            "2. Identify the midpoint M of one side of the square.",
-            "3. Connect M to the opposite corners of the square.",
-            "4. The resulting triangle MDC has the same area as the rectangle."
-        ]
-        for i in range(1, 5):
-            images.append(draw_triangle_transformation(i))
+    steps = [  # Correct indentation
+        "1. Draw a square with an area twice that of the rectangle.",
+        "2. Identify the midpoint M of one side of the square.",
+        "3. Connect M to the opposite corners of the square.",
+        "4. The resulting triangle MDC has the same area as the rectangle."
+    ]
+    for i in range(1, 5):  # Properly aligned with `steps`
+        images.append(draw_triangle_transformation(i))  # Correct indentation
+
 
     elif shape == "square_to_triangle":
           steps = [
@@ -243,8 +244,8 @@ def generate():
             "4. Find midpoint J of EF.",
             "5. Join JH and JG.",
             "6. Final Triangle JHG."
-        ]
-        for i in range(1, 7):
+    ]
+    for i in range(1, 7):
             images.append(draw_square_to_triangle(i))
 
     elif shape == "trapezium_to_triangle":
