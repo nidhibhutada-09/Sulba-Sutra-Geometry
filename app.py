@@ -114,8 +114,10 @@ def draw_triangle_transformation(step):
 @app.route('/generate', methods=['POST'])
 def generate():
     shape = request.form.get('shape')
+    images = []
+    steps = []
+
     if shape == "square":
-        images = []
         steps = [
             "1. Draw a horizontal base line between points E and W.",
             "2. Mark the midpoint M and draw a circle around it.",
@@ -124,13 +126,10 @@ def generate():
             "5. Draw four more circles from points E, W, N, and S.",
             "6. The intersections of these circles form the square corners."
         ]
-
-        # Generate images for each step, including previous steps
         for i in range(1, 7):
             images.append(draw_square(i))
 
     elif shape == "triangle":
-        images = []
         steps = [
             "1. Draw a square with an area twice that of the rectangle.",
             "2. Identify the midpoint M of one side of the square.",
@@ -140,11 +139,12 @@ def generate():
         for i in range(1, 5):
             images.append(draw_triangle_transformation(i))
         
-
     else:
         return "Shape not supported yet."
-   
-     return render_template('result.html', zipped_data=list(zip(images, steps))) 
+
+    return render_template('result.html', zipped_data=list(zip(images, steps)))
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))  # Default Render port is 10000
-    app.run(host='0.0.0.0', port=port)  # Removed debug=True for productio
+    app.run(host='0.0.0.0', port=port)  # Removed debug=True for production
+
