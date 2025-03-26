@@ -74,6 +74,43 @@ def draw_square(step):
 
     return encoded_img
 
+def draw_triangle_transformation(step):
+    fig, ax = plt.subplots()
+    ax.set_xlim(-1, 11)
+    ax.set_ylim(-1, 11)
+    ax.set_aspect(1)
+    plt.title(f"Transforming Rectangle to Triangle - Step {step}")
+
+    # Step 1: Draw square ABCD
+    A, B, C, D = (0, 10), (10, 10), (10, 0), (0, 0)
+    ax.plot([A[0], B[0]], [A[1], B[1]], 'k-', linewidth=2)
+    ax.plot([B[0], C[0]], [B[1], C[1]], 'k-', linewidth=2)
+    ax.plot([C[0], D[0]], [C[1], D[1]], 'k-', linewidth=2)
+    ax.plot([D[0], A[0]], [D[1], A[1]], 'k-', linewidth=2)
+
+    # Step 2: Identify midpoint M
+    M = ((A[0] + B[0]) / 2, (A[1] + B[1]) / 2)
+    if step >= 2:
+        ax.plot(M[0], M[1], 'ro', markersize=5, label="Midpoint M")
+
+    # Step 3: Draw diagonal lines DM and CM
+    if step >= 3:
+        ax.plot([D[0], M[0]], [D[1], M[1]], 'r-', linewidth=2, label="DM")
+        ax.plot([C[0], M[0]], [C[1], M[1]], 'r-', linewidth=2, label="CM")
+
+    # Step 4: Final Triangle MDC
+    if step >= 4:
+        ax.fill([D[0], M[0], C[0]], [D[1], M[1], C[1]], 'b', alpha=0.3, label="Final Triangle MDC")
+
+    plt.legend()
+    img_io = io.BytesIO()
+    plt.savefig(img_io, format='png', bbox_inches='tight')
+    img_io.seek(0)
+    encoded_img = base64.b64encode(img_io.getvalue()).decode('utf-8')
+    plt.close(fig)
+
+    return encoded_img
+
 @app.route('/generate', methods=['POST'])
 def generate():
     shape = request.form.get('shape')
@@ -91,13 +128,22 @@ def generate():
         # Generate images for each step, including previous steps
         for i in range(1, 7):
             images.append(draw_square(i))
-
-        return render_template('result.html', zipped_data=list(zip(images, steps)))
+     elif shape == "triangle":
+        images = []
+        steps = [
+            "1. Draw a square with an area twice that of the rectangle.",
+            "2. Identify the midpoint M of one side of the square.",
+            "3. Connect M to the opposite corners of the square.",
+            "4. The resulting triangle MDC has the same area as the rectangle."
+        ]
+        for i in range(1, 5):
+            images.append(draw_triangle_transformation(i))
+        
 
     else:
         return "Shape not supported yet."
-
+   
+     return render_template('result.html', zipped_data=list(zip(images, steps))) 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))  # Default Render port is 10000
-    app.run(host='0.0.0.0', port=port)  # Removed debug=True for production
-
+    app.run(host='0.0.0.0', port=port)  # Removed debug=True for productio
