@@ -246,6 +246,7 @@ def generate():
         ]
         for i in range(1, 7):
             images.append(draw_square_to_triangle(i))
+
     elif shape == "trapezium_to_triangle":
     steps = [
         "1. Draw square ABCD.",
