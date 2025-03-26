@@ -76,13 +76,14 @@ def draw_square(step):
 
 def draw_triangle_transformation(step):
     fig, ax = plt.subplots()
-    ax.set_xlim(-1, 11)
-    ax.set_ylim(-1, 11)
+    ax.set_xlim(-1, 12)
+    ax.set_ylim(-1, 12)
     ax.set_aspect(1)
     plt.title(f"Transforming Rectangle to Triangle - Step {step}")
-
+    side_length = np.sqrt(12)
+    A, B = (0, side_length), (side_length, side_length)
+    C, D = (side_length, 0), (0, 0)
     # Step 1: Draw square ABCD
-    A, B, C, D = (0, 10), (10, 10), (10, 0), (0, 0)
     ax.plot([A[0], B[0]], [A[1], B[1]], 'k-', linewidth=2)
     ax.plot([B[0], C[0]], [B[1], C[1]], 'k-', linewidth=2)
     ax.plot([C[0], D[0]], [C[1], D[1]], 'k-', linewidth=2)
