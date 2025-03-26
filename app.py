@@ -226,7 +226,7 @@ def generate():
             images.append(draw_square(i))
 
     elif shape == "triangle":
-        steps = [
+          steps = [
             "1. Draw a square with an area twice that of the rectangle.",
             "2. Identify the midpoint M of one side of the square.",
             "3. Connect M to the opposite corners of the square.",
@@ -236,7 +236,7 @@ def generate():
             images.append(draw_triangle_transformation(i))
 
     elif shape == "square_to_triangle":
-        steps = [
+          steps = [
             "1. Draw square ABCD.",
             "2. Draw diagonal BD.",
             "3. Construct square EFGH.",
@@ -248,7 +248,7 @@ def generate():
             images.append(draw_square_to_triangle(i))
 
     elif shape == "trapezium_to_triangle":
-    steps = [
+          steps = [
         "1. Draw square ABCD.",
         "2. Identify points J, K, L, M.",
         "3. Draw trapezium LFKM."
