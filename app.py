@@ -111,6 +111,59 @@ def draw_triangle_transformation(step):
     plt.close(fig)
 
     return encoded_img
+def draw_square_to_triangle(step):
+    fig, ax = plt.subplots()
+    ax.set_xlim(-3, 15)
+    ax.set_ylim(-3, 15)
+    ax.set_aspect(1)
+    plt.title(f"Transforming Square to Triangle - Step {step}")
+
+    # Step 1: Draw square ABCD
+    s = 5  # Side length of the square ABCD
+    A, B = (0, 0), (s, 0)
+    C, D = (s, s), (0, s)
+    ax.plot([A[0], B[0]], [A[1], B[1]], 'k-', linewidth=2)
+    ax.plot([B[0], C[0]], [B[1], C[1]], 'k-', linewidth=2)
+    ax.plot([C[0], D[0]], [C[1], D[1]], 'k-', linewidth=2)
+    ax.plot([D[0], A[0]], [D[1], A[1]], 'k-', linewidth=2)
+
+    # Step 2: Draw diagonal BD
+    BD_length = s * np.sqrt(2)
+    B, D = (0, 0), (s, s)
+    if step >= 2:
+        ax.plot([B[0], D[0]], [B[1], D[1]], 'b-', linewidth=2, label="Diagonal BD")
+
+    # Step 3: Construct Square EFGH
+    E, F = (10, 0), (10 + BD_length, 0)
+    G, H = (10 + BD_length, BD_length), (10, BD_length)
+    if step >= 3:
+        ax.plot([E[0], F[0]], [E[1], F[1]], 'g-', linewidth=2)
+        ax.plot([F[0], G[0]], [F[1], G[1]], 'g-', linewidth=2)
+        ax.plot([G[0], H[0]], [G[1], H[1]], 'g-', linewidth=2)
+        ax.plot([H[0], E[0]], [H[1], E[1]], 'g-', linewidth=2)
+
+    # Step 4: Find midpoint J of EF
+    J = ((E[0] + F[0]) / 2, (E[1] + F[1]) / 2)
+    if step >= 4:
+        ax.plot(J[0], J[1], 'ro', markersize=5, label="Midpoint J")
+
+    # Step 5: Join JH and JG
+    if step >= 5:
+        ax.plot([J[0], H[0]], [J[1], H[1]], 'r-', linewidth=2, label="Line JH")
+        ax.plot([J[0], G[0]], [J[1], G[1]], 'r-', linewidth=2, label="Line JG")
+
+    # Step 6: Final Triangle JHG
+    if step >= 6:
+        ax.fill([J[0], H[0], G[0]], [J[1], H[1], G[1]], 'b', alpha=0.3, label="Triangle JHG")
+
+    plt.legend()
+    img_io = io.BytesIO()
+    plt.savefig(img_io, format='png', bbox_inches='tight')
+    img_io.seek(0)
+    encoded_img = base64.b64encode(img_io.getvalue()).decode('utf-8')
+    plt.close(fig)
+
+    return encoded_img
 
 @app.route('/generate', methods=['POST'])
 def generate():
@@ -139,7 +192,17 @@ def generate():
         ]
         for i in range(1, 5):
             images.append(draw_triangle_transformation(i))
-        
+    elif shape == "square_to_triangle":
+        steps = [
+            "1. Draw square ABCD.",
+            "2. Draw diagonal BD.",
+            "3. Construct square EFGH.",
+            "4. Find midpoint J of EF.",
+            "5. Join JH and JG.",
+            "6. Final Triangle JHG."
+        ]
+        for i in range(1, 7):
+            images.append(draw_square_to_triangle(i))     
     else:
         return "Shape not supported yet."
 
