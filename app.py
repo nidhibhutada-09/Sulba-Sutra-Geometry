@@ -226,7 +226,7 @@ def generate():
             images.append(draw_square(i))
 
     elif shape == "triangle":
-    steps = [  # Correct indentation
+          steps = [  # Correct indentation
         "1. Draw a square with an area twice that of the rectangle.",
         "2. Identify the midpoint M of one side of the square.",
         "3. Connect M to the opposite corners of the square.",
