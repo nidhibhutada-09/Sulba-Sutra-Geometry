@@ -128,7 +128,8 @@ def generate():
         # Generate images for each step, including previous steps
         for i in range(1, 7):
             images.append(draw_square(i))
-     elif shape == "triangle":
+
+    elif shape == "triangle":
         images = []
         steps = [
             "1. Draw a square with an area twice that of the rectangle.",
