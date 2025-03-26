@@ -1,10 +1,38 @@
-<form action="/generate" method="POST">
-    <label for="shape">Choose a shape:</label>
-    <select name="shape" id="shape">
-        <option value="square">Square Construction</option>
-        <option value="triangle">Triangle Transformation</option>
-        <option value="square_to_triangle">Square to Triangle Transformation</option>
-    </select>
-    <button type="submit">Generate</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sulba Sutra Geometry</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Geometry Construction Visualizer</h1>
+        
+        <!-- Shape Selection Form -->
+        <form action="/generate" method="POST">
+            <label for="shape">Select Shape:</label>
+            <select name="shape" id="shape">
+                <option value="square">Square Construction</option>
+                <option value="triangle">Transforming Rectangle into Triangle</option>
+                <option value="trapezium_triangle">Trapezium to Triangle</option>
+            </select>
+            <button type="submit">Generate</button>
+        </form>
+        
+        <!-- Display Generated Diagram and Steps -->
+        {% if zipped_data %}
+            <div class="output">
+                {% for image, step in zipped_data %}
+                    <div class="step">
+                        <img src="data:image/png;base64,{{ image }}" alt="Step Diagram" />
+                        <p>{{ step }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
 

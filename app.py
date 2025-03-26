@@ -234,6 +234,7 @@ def generate():
         ]
         for i in range(1, 5):
             images.append(draw_triangle_transformation(i))
+
     elif shape == "square_to_triangle":
         steps = [
             "1. Draw square ABCD.",
