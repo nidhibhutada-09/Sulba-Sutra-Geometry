@@ -1,0 +1,79 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+
+/* Center content within the container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Styling for the page title */
+h1 {
+    color: #333;
+    font-size: 2em;
+    margin-bottom: 30px;
+}
+
+/* Form styling */
+form {
+    margin: 20px 0;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    display: inline-block;
+    border-radius: 8px;
+}
+
+label {
+    font-size: 1.1em;
+    margin-right: 10px;
+}
+
+select {
+    padding: 5px 10px;
+    font-size: 1em;
+    margin-right: 10px;
+}
+
+button {
+    padding: 8px 16px;
+    font-size: 1em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Styling for the output images and steps */
+.output {
+    margin-top: 30px;
+}
+
+.step {
+    display: inline-block;
+    margin: 20px;
+    text-align: center;
+}
+
+.step img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.step p {
+    font-size: 1.1em;
+    color: #555;
+}

@@ -178,10 +178,13 @@ def draw_trapezium_to_triangle(step):
 def generate():
     if request.method == 'POST':
         shape = request.form.get('shape')
+
         if not shape:
             return "Shape not selected. Please choose a shape."
-         # Debugging: Print the value of 'shape'
-        print(f"Shape received: {shape}")  # This will print in your terminal/log
+
+        # Debugging: Print the value of 'shape'
+        print(f"Shape received: {shape.strip()}")  # This will print in your terminal/log
+
         images = []
         steps = []
 
@@ -194,11 +197,10 @@ def generate():
                 "5. Draw four more circles from points E, W, N, and S.",
                 "6. The intersections of these circles form the square corners."
             ]
-            # Using a for loop instead of list comprehension
             for i in range(1, 7):
                 images.append(draw_square(i))
 
-        elif shape == "square_to_triangle":
+        elif shape.strip() == "square_to_triangle":  
             steps = [
                 "1. Draw square ABCD.",
                 "2. Draw diagonal BD.",
@@ -208,23 +210,25 @@ def generate():
                 "6. Final Triangle JHG."
             ]  
             for i in range(1, 7):
-                images.append(draw_square_to_triangle(i))
+                images.append(draw_square_to_triangle(i))  
 
-        elif shape == "trapezium_to_triangle":
+        elif shape.strip() == "trapezium_to_triangle":
             steps = [
                 "1. Draw square ABCD.",
                 "2. Identify points J, K, L, M.",
                 "3. Draw trapezium LFKM."
             ]
             for i in range(1, 4):
-                images.append(draw_trapezium_to_triangle(i))
+                images.append(draw_trapezium_to_triangle(i))  
 
         else:
+            print(f"Unknown shape received: {shape}")  
             return "Shape not supported yet."
 
         return render_template('result.html', zipped_data=list(zip(images, steps)))
-    else:
-        return render_template('index.html')
+
+    return render_template('index.html')
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))  # Default Render port is 10000

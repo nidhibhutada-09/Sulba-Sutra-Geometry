@@ -4,23 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sulba Sutra Geometry</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container">
         <h1>Geometry Construction Visualizer</h1>
         
         <!-- Shape Selection Form -->
-        <form action="/generate" method="POST">
-            <label for="shape">Select Shape:</label>
-            <select name="shape" id="shape">
-                <option value="square">Square Construction</option>
-                <option value="triangle">Transforming Rectangle into Triangle</option>
-                <option value="trapezium_triangle">Trapezium to Triangle</option>
+        <form method="POST" action="/generate">
+            <label for="shape">Choose a shape:</label>
+            <select name="shape" id="shape" required>
+                <option value="" disabled selected>Select a shape</option>
+                <option value="square">Square</option>
+                <option value="square_to_triangle">Square to Triangle</option>
+                <option value="trapezium_to_triangle">Trapezium to Triangle</option>
             </select>
             <button type="submit">Generate</button>
-        </form>
-        
+        </form>        
+
         <!-- Display Generated Diagram and Steps -->
         {% if zipped_data %}
             <div class="output">
@@ -35,4 +36,3 @@
     </div>
 </body>
 </html>
-
