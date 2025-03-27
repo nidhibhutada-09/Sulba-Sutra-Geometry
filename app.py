@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, Response
+from flask import Flask, render_template, request, url_for, Response
+app = Flask(__name__, static_folder='static')
 import numpy as np
 import matplotlib.pyplot as plt
 import io
@@ -16,6 +17,7 @@ def home():
     if request.method == 'HEAD':
         return Response(status=200)  # Return an empty response with HTTP 200 for HEAD requests
     return render_template('index.html')
+
 
 def draw_square(step):
     fig, ax = plt.subplots(figsize=(10, 10)) #increse figure size
@@ -74,43 +76,6 @@ def draw_square(step):
 
     return encoded_img
 
-def draw_triangle_transformation(step):
-    fig, ax = plt.subplots()
-    ax.set_xlim(-1, 12)
-    ax.set_ylim(-1, 12)
-    ax.set_aspect(1)
-    plt.title(f"Transforming Rectangle to Triangle - Step {step}")
-    side_length = np.sqrt(12)
-    A, B = (0, side_length), (side_length, side_length)
-    C, D = (side_length, 0), (0, 0)
-    # Step 1: Draw square ABCD
-    ax.plot([A[0], B[0]], [A[1], B[1]], 'k-', linewidth=2)
-    ax.plot([B[0], C[0]], [B[1], C[1]], 'k-', linewidth=2)
-    ax.plot([C[0], D[0]], [C[1], D[1]], 'k-'(figsize=(10, 10)), linewidth=2)
-    ax.plot([D[0], A[0]], [D[1], A[1]], 'k-', linewidth=2)
-
-    # Step 2: Identify midpoint M
-    M = ((A[0] + B[0]) / 2, (A[1] + B[1]) / 2)
-    if step >= 2:
-        ax.plot(M[0], M[1], 'ro', markersize=5, label="Midpoint M")
-
-    # Step 3: Draw diagonal lines DM and CM
-    if step >= 3:
-        ax.plot([D[0], M[0]], [D[1], M[1]], 'r-', linewidth=2, label="DM")
-        ax.plot([C[0], M[0]], [C[1], M[1]], 'r-', linewidth=2, label="CM")
-
-    # Step 4: Final Triangle MDC
-    if step >= 4:
-        ax.fill([D[0], M[0], C[0]], [D[1], M[1], C[1]], 'b', alpha=0.3, label="Final Triangle MDC")
-
-    plt.legend()
-    img_io = io.BytesIO()
-    plt.savefig(img_io, format='png', bbox_inches='tight')
-    img_io.seek(0)
-    encoded_img = base64.b64encode(img_io.getvalue()).decode('utf-8')
-    plt.close(fig)
-
-    return encoded_img
 def draw_square_to_triangle(step):
     fig, ax = plt.subplots(figsize=(15, 15))
     ax.set_xlim(-3, 15)
@@ -176,6 +141,8 @@ def draw_trapezium_to_triangle(step):
     side_length = np.sqrt(12)  # For square area = 12 (4 times area of triangle ABC)
     A, B = (0, side_length), (side_length, side_length)
     C, D = (side_length, 0), (0, 0)
+    E, F = (10, 0), (10 + side_length, 0)
+    G, H = (10 + side_length, side_length), (10, side_length)
 
     # Step 1: Draw square ABCD
     ax.plot([A[0], B[0]], [A[1], B[1]], 'k-', linewidth=2)
@@ -207,60 +174,57 @@ def draw_trapezium_to_triangle(step):
 
     return encoded_img
 
-@app.route('/generate', methods=['POST'])
+@app.route('/generate', methods=['POST', 'GET'])
 def generate():
-    shape = request.form.get('shape')
-    images = []
-    steps = []
+    if request.method == 'POST':
+        shape = request.form.get('shape')
+        if not shape:
+            return "Shape not selected. Please choose a shape."
+         # Debugging: Print the value of 'shape'
+        print(f"Shape received: {shape}")  # This will print in your terminal/log
+        images = []
+        steps = []
 
-    if shape == "square":
-        steps = [
-            "1. Draw a horizontal base line between points E and W.",
-            "2. Mark the midpoint M and draw a circle around it.",
-            "3. Draw two more circles from points E and W.",
-            "4. The intersection of these circles gives the vertical line NS.",
-            "5. Draw four more circles from points E, W, N, and S.",
-            "6. The intersections of these circles form the square corners."
-        ]
-        for i in range(1, 7):
-            images.append(draw_square(i))
+        if shape == "square":
+            steps = [
+                "1. Draw a horizontal base line between points E and W.",
+                "2. Mark the midpoint M and draw a circle around it.",
+                "3. Draw two more circles from points E and W.",
+                "4. The intersection of these circles gives the vertical line NS.",
+                "5. Draw four more circles from points E, W, N, and S.",
+                "6. The intersections of these circles form the square corners."
+            ]
+            # Using a for loop instead of list comprehension
+            for i in range(1, 7):
+                images.append(draw_square(i))
 
-    elif shape == "triangle":
-          steps = [  # Correct indentation
-        "1. Draw a square with an area twice that of the rectangle.",
-        "2. Identify the midpoint M of one side of the square.",
-        "3. Connect M to the opposite corners of the square.",
-        "4. The resulting triangle MDC has the same area as the rectangle."
-    ]
-    for i in range(1, 5):  # Properly aligned with `steps`
-        images.append(draw_triangle_transformation(i))  # Correct indentation
+        elif shape == "square_to_triangle":
+            steps = [
+                "1. Draw square ABCD.",
+                "2. Draw diagonal BD.",
+                "3. Construct square EFGH.",
+                "4. Find midpoint J of EF.",
+                "5. Join JH and JG.",
+                "6. Final Triangle JHG."
+            ]  
+            for i in range(1, 7):
+                images.append(draw_square_to_triangle(i))
 
+        elif shape == "trapezium_to_triangle":
+            steps = [
+                "1. Draw square ABCD.",
+                "2. Identify points J, K, L, M.",
+                "3. Draw trapezium LFKM."
+            ]
+            for i in range(1, 4):
+                images.append(draw_trapezium_to_triangle(i))
 
-    elif shape == "square_to_triangle":
-          steps = [
-            "1. Draw square ABCD.",
-            "2. Draw diagonal BD.",
-            "3. Construct square EFGH.",
-            "4. Find midpoint J of EF.",
-            "5. Join JH and JG.",
-            "6. Final Triangle JHG."
-    ]
-    for i in range(1, 7):
-            images.append(draw_square_to_triangle(i))
+        else:
+            return "Shape not supported yet."
 
-    elif shape == "trapezium_to_triangle":
-          steps = [
-        "1. Draw square ABCD.",
-        "2. Identify points J, K, L, M.",
-        "3. Draw trapezium LFKM."
-    ]
-    for i in range(1, 4):  # Update range based on steps
-        images.append(draw_trapezium_to_triangle(i))
-  
+        return render_template('result.html', zipped_data=list(zip(images, steps)))
     else:
-        return "Shape not supported yet."
-
-    return render_template('result.html', zipped_data=list(zip(images, steps)))
+        return render_template('index.html')
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))  # Default Render port is 10000
