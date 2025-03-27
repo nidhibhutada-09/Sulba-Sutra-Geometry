@@ -130,49 +130,68 @@ def draw_square_to_triangle(step):
 
     return encoded_img
 
-def draw_trapezium_to_triangle(step):
+def draw_triangle_to_trapezium(step):
     fig, ax = plt.subplots(figsize=(10, 10))
     ax.set_xlim(-1, 12)
     ax.set_ylim(-1, 12)
     ax.set_aspect(1)
-    plt.title(f"Trapezium to Triangle - Step {step}")
+    plt.title(f"Triangle to Trapezium - Step {step}")
 
-    # Coordinates for square EFGH and triangle ABC
-    side_length = np.sqrt(12)  # For square area = 12 (4 times area of triangle ABC)
-    A, B = (0, side_length), (side_length, side_length)
-    C, D = (side_length, 0), (0, 0)
-    E, F = (10, 0), (10 + side_length, 0)
-    G, H = (10 + side_length, side_length), (10, side_length)
+    # Coordinates for Triangle ABC
+    A = (0, 0)
+    B = (5, 0)  # Base of triangle ABC
+    height = 6
+    C = (2.5, height)  # Apex of triangle
 
-    # Step 1: Draw square ABCD
+    # Step 1: Draw triangle ABC
     ax.plot([A[0], B[0]], [A[1], B[1]], 'k-', linewidth=2)
     ax.plot([B[0], C[0]], [B[1], C[1]], 'k-', linewidth=2)
-    ax.plot([C[0], D[0]], [C[1], D[1]], 'k-', linewidth=2)
-    ax.plot([D[0], A[0]], [D[1], A[1]], 'k-', linewidth=2)
+    ax.plot([C[0], A[0]], [C[1], A[1]], 'k-', linewidth=2)
 
-    # Step 2: Identify points J, K, L, M
-    J = ((D[0] + C[0]) / 2, (D[1] + C[1]) / 2)  # Midpoint of EH
-    K = ((A[0] + B[0]) / 2, (A[1] + B[1]) / 2)  # Midpoint of FC
-    L = (A[0], (D[1] + C[1]) / 4)  # L on EF, LF = 1/4 EF
-    M = ((J[0] + K[0]) / 4, (J[1] + K[1]) / 4)  # M on JK, JM = 1/4 JK
+    # Step 2: Draw square EFGH (Area = 4 * Area of triangle ABC)
+    area_triangle = 0.5 * (B[0] - A[0]) * height  # Base * Height / 2
+    side_square = np.sqrt(4 * area_triangle)  # Square side length
+    E = (6, 0)
+    F = (E[0] + side_square, E[1])
+    G = (F[0], F[1] + side_square)
+    H = (E[0], E[1] + side_square)
+    
+    # Draw square
+    ax.plot([E[0], F[0]], [E[1], F[1]], 'g-', linewidth=2)
+    ax.plot([F[0], G[0]], [F[1], G[1]], 'g-', linewidth=2)
+    ax.plot([G[0], H[0]], [G[1], H[1]], 'g-', linewidth=2)
+    ax.plot([H[0], E[0]], [H[1], E[1]], 'g-', linewidth=2)
 
-    if step >= 1:
-        ax.plot([J[0], K[0]], [J[1], K[1]], 'r-', linewidth=2, label="JK")
-        ax.plot([L[0], M[0]], [L[1], M[1]], 'g-', linewidth=2, label="LF")
+    # Step 3: Midpoints J and K
+    J = ((E[0] + H[0]) / 2, (E[1] + H[1]) / 2)  # Midpoint of EH
+    K = ((F[0] + C[0]) / 2, (F[1] + C[1]) / 2)  # Midpoint of FC
+    ax.plot(J[0], J[1], 'ro', markersize=5, label="Point J")
+    ax.plot(K[0], K[1], 'ro', markersize=5, label="Point K")
+    ax.plot([J[0], K[0]], [J[1], K[1]], 'b-', linewidth=2, label="Line JK")
 
-    # Step 3: Draw trapezium LFKM
-    if step >= 2:
-        ax.fill([L[0], M[0], K[0], J[0]], [L[1], M[1], K[1], J[1]], 'b', alpha=0.3, label="Trapezium LFKM")
+    # Step 4: Point L on EF such that LF = 1/4 EF
+    L = (E[0] + (1 / 4) * (F[0] - E[0]), E[1])
+    ax.plot(L[0], L[1], 'bo', markersize=5, label="Point L")
+
+    # Step 5: Point M on JK such that JM = 1/4 JK
+    JK_length = np.sqrt((K[0] - J[0])**2 + (K[1] - J[1])**2)
+    M = (J[0] + (1 / 4) * (K[0] - J[0]), J[1] + (1 / 4) * (K[1] - J[1]))
+    ax.plot(M[0], M[1], 'go', markersize=5, label="Point M")
+
+    # Step 6: Draw Trapezium LFKM
+    ax.fill([L[0], F[0], K[0], M[0]], [L[1], F[1], K[1], M[1]], 'b', alpha=0.3, label="Trapezium LFKM")
 
     plt.legend()
 
+    # Save image to memory buffer and encode in base64
     img_io = io.BytesIO()
     plt.savefig(img_io, format='png', bbox_inches='tight')
     img_io.seek(0)
     encoded_img = base64.b64encode(img_io.getvalue()).decode('utf-8')
-    plt.close(fig)
+    plt.close(fig)  # Close figure to free memory
 
     return encoded_img
+
 
 @app.route('/generate', methods=['POST', 'GET'])
 def generate():
@@ -212,19 +231,22 @@ def generate():
             for i in range(1, 7):
                 images.append(draw_square_to_triangle(i))  
 
-        elif shape.strip() == "trapezium_to_triangle":
+        elif shape.strip() == "square_to_triangle":  
             steps = [
                 "1. Draw square ABCD.",
-                "2. Identify points J, K, L, M.",
-                "3. Draw trapezium LFKM."
+                "2. Draw diagonal BD.",
+                "3. Construct square EFGH.",
+                "4. Find midpoint J of EF.",
+                "5. Join JH and JG.",
+                "6. Final Triangle JHG."
             ]
             for i in range(1, 4):
-                images.append(draw_trapezium_to_triangle(i))  
+                images.append(draw_triangle_to_trapezium(i))  
 
         else:
             print(f"Unknown shape received: {shape}")  
             return "Shape not supported yet."
-
+        zipped_data = zip(images, steps)
         return render_template('result.html', zipped_data=list(zip(images, steps)))
 
     return render_template('index.html')
