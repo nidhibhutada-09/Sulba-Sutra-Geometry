@@ -7,12 +7,26 @@
 </head>
 <body>
     <h1>Construction Steps</h1>
+
     {% for image, step in zipped_data %}
         <div>
             <h2>{{ step }}</h2>
             <img src="data:image/png;base64,{{ image }}" alt="Step Image">
         </div>
     {% endfor %}
+
+    <!-- Shloka, Reference, and Explanation at the End -->
+    <div>
+        <h2>Shloka</h2>
+        <p>{{ shloka }}</p>
+
+        <h2>Reference</h2>
+        <p>{{ reference }}</p>
+
+        <h2>Explanation</h2>
+        <p>{{ explanation }}</p>
+    </div>
+
     <a href="/">Go back</a>
 </body>
 </html>
