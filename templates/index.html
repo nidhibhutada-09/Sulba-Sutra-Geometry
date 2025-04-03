@@ -6,10 +6,12 @@
     <title>Sulba Sutra Geometry</title>
     
     <!-- Load CSS First -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+    
     
     <!-- Preload Hint for Faster Styling -->
     <link rel="preload" href="{{ url_for('static', filename='styles.css') }}" as="style">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
     <style>
         /* Hide content initially for fade-in effect */
@@ -113,13 +115,14 @@
         <h1>Geometry Construction Visualizer-Śulbāstra</h1>
         
         <!-- Shape Selection Form -->
-        <form method="POST" action="/generate">
+        <form action="{{ url_for('generate') }}" method="post">
             <label for="shape">Choose a shape:</label>
             <select name="shape" id="shape" required>
                 <option value="" disabled selected>Select a shape</option>
                 <option value="square">Square</option>
                 <option value="square_to_triangle">Square to Triangle</option>
                 <option value="square_to_pentagon">Square to Pentagon</option>
+                <option value="square_to_circle">Square to Circle</option>
             </select>
             <button type="submit">Generate</button>
         </form>        

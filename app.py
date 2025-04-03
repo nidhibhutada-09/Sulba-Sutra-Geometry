@@ -10,7 +10,7 @@ import os
 import matplotlib
 matplotlib.use('Agg')
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 @app.route('/', methods=['GET', 'HEAD'])
 def home():
@@ -19,62 +19,94 @@ def home():
     return render_template('index.html')
 
 
+import matplotlib.pyplot as plt
+import numpy as np
+
 def draw_square(step):
-    fig, ax = plt.subplots(figsize=(10, 10)) #increse figure size
-    ax.set_xlim(-3, 3)
-    ax.set_ylim(-3, 3)
+    fig, ax = plt.subplots(figsize=(10, 10))  # Increased figure size
+    ax.set_xlim(-4, 4)
+    ax.set_ylim(-4, 4)
     ax.set_aspect(1)
     plt.title(f"Śulba Sūtra Square Construction - Step {step}")
 
-    # Define key points
-    W, E = (-2, 0), (2, 0)  # West and East points
-    M = ((W[0] + E[0]) / 2, (W[1] + E[1]) / 2)  # Midpoint
-    N, S = (0, 2), (0, -2)  # North and South intersection points
-    P1, P2, P3, P4 = (-2, 2), (2, 2), (2, -2), (-2, -2)  # Square corners
+    # Step 1: Draw the vertical center line AB
+    A, B = (0, -1), (0, 1)  # Vertical line AB
+    O = (0, 0)  # Midpoint of AB
+    r = abs(A[1] - O[1])  # Radius OA or OB (since A and B are on the Y-axis)
+    
+    ax.plot([A[0], B[0]], [A[1], B[1]], 'k-', linewidth=2, label="Line AB")
+    ax.text(A[0], A[1], "A", fontsize=12, verticalalignment='bottom')
+    ax.text(B[0], B[1], "B", fontsize=12, verticalalignment='bottom')
+    ax.text(O[0], O[1], "O", fontsize=12, color='blue', verticalalignment='bottom')
+    
+    # Step 2: Draw circle centered at O with radius OA
+    circle_O = plt.Circle(O, r, fill=False, linestyle='dashed', edgecolor='brown')
+    ax.add_patch(circle_O)
 
-    # Step 1: Draw base line
-    ax.plot([W[0], E[0]], [W[1], E[1]], 'k-', linewidth=2, label="Base Line EW")
-
-    # Step 2: Draw midpoint circle
+    # Step 3: Draw circles centered at A and B with radius AB
     if step >= 2:
-        circle_main = plt.Circle(M, abs(E[0] - M[0]), fill=False, linestyle='dashed', edgecolor='blue')
-        ax.add_patch(circle_main)
+        radius = abs(A[1] - B[1])  # Distance AB (since A and B are on Y-axis)
+        circle_A = plt.Circle(A, radius, fill=False, linestyle='dashed', edgecolor='blue')
+        circle_B = plt.Circle(B, radius, fill=False, linestyle='dashed', edgecolor='blue')
+        ax.add_patch(circle_A)
+        ax.add_patch(circle_B)
 
-    # Step 3: Draw circles from W and E
+    # Step 4: Find intersection points M and N
     if step >= 3:
-        circle_w = plt.Circle(W, abs(E[0] - M[0]), fill=False, linestyle='dashed', edgecolor='green')
-        circle_e = plt.Circle(E, abs(E[0] - M[0]), fill=False, linestyle='dashed', edgecolor='green')
-        ax.add_patch(circle_w)
-        ax.add_patch(circle_e)
+        M, N = (-radius, 0), (radius, 0)  # M and N are on the X-axis
+        ax.plot([M[0], N[0]], [M[1], N[1]], 'r-', linewidth=2, label="Line MN")
+        ax.text(M[0], M[1], "M", fontsize=12, horizontalalignment='right')
+        ax.text(N[0], N[1], "N", fontsize=12, horizontalalignment='left')
 
-    # Step 4: Draw vertical diameter NS
+    # Step 5: Place points C and D such that AB = CD
     if step >= 4:
-        ax.plot([N[0], S[0]], [N[1], S[1]], 'r-', linewidth=2, label="Vertical Diameter NS")
+        C, D = (-1, 0), (1, 0)
+        ax.text(C[0], C[1], "C", fontsize=12, horizontalalignment='right')
+        ax.text(D[0], D[1], "D", fontsize=12, horizontalalignment='left')
 
-    # Step 5: Draw circles from N and S
+    # Step 6: Draw circles centered at A, B, C, and D
     if step >= 5:
-        circle_n = plt.Circle(N, abs(E[0] - M[0]), fill=False, linestyle='dashed', edgecolor='orange')
-        circle_s = plt.Circle(S, abs(E[0] - M[0]), fill=False, linestyle='dashed', edgecolor='orange')
-        ax.add_patch(circle_n)
-        ax.add_patch(circle_s)
+        circles = [
+            plt.Circle(A, r, fill=False, linestyle='dashed', edgecolor='orange'),
+            plt.Circle(B, r, fill=False, linestyle='dashed', edgecolor='orange'),
+            plt.Circle(C, r, fill=False, linestyle='dashed', edgecolor='orange'),
+            plt.Circle(D, r, fill=False, linestyle='dashed', edgecolor='orange')
+        ]
+        for c in circles:
+            ax.add_patch(c)
 
-    # Step 6: Draw the final square (Including all previous steps)
+    # Step 7: Find intersection points E, F, G, H
     if step >= 6:
-        ax.plot([P1[0], P2[0]], [P1[1], P2[1]], 'b-', linewidth=2)
-        ax.plot([P2[0], P3[0]], [P2[1], P3[1]], 'b-', linewidth=2)
-        ax.plot([P3[0], P4[0]], [P3[1], P4[1]], 'b-', linewidth=2)
-        ax.plot([P4[0], P1[0]], [P4[1], P1[1]], 'b-', linewidth=2)
+        E, F, G, H = (-1, 1), (1, 1), (1, -1), (-1, -1)
+        ax.text(E[0], E[1], "E", fontsize=12, verticalalignment='bottom')
+        ax.text(F[0], F[1], "F", fontsize=12, verticalalignment='bottom')
+        ax.text(G[0], G[1], "G", fontsize=12, verticalalignment='top')
+        ax.text(H[0], H[1], "H", fontsize=12, verticalalignment='top')
+
+    # Step 8: Join EFGH to form the final square
+    if step >= 7:
+        ax.plot([E[0], F[0]], [E[1], F[1]], 'b-', linewidth=2)
+        ax.plot([F[0], G[0]], [F[1], G[1]], 'b-', linewidth=2)
+        ax.plot([G[0], H[0]], [G[1], H[1]], 'b-', linewidth=2)
+        ax.plot([H[0], E[0]], [H[1], E[1]], 'b-', linewidth=2)
 
     plt.legend()
+    plt.show()
 
+# Call the function with the desired step
+# draw_square(7)
+
+    
     # Save image to memory buffer and encode in base64
     img_io = io.BytesIO()
     plt.savefig(img_io, format='png', bbox_inches='tight')
     img_io.seek(0)
     encoded_img = base64.b64encode(img_io.getvalue()).decode('utf-8')
     plt.close(fig)  # Close figure to free memory
+    draw_square(7)
 
     return encoded_img
+
 
 def draw_square_to_triangle(step):
     plt.clf() # clear previous plot
@@ -88,10 +120,15 @@ def draw_square_to_triangle(step):
     s = 4  # Side length of the square ABCD
     A, B = (0, 0), (s, 0)
     C, D = (s, s), (0, s)
-    ax.plot([A[0], B[0]], [A[1], B[1]], 'k-', linewidth=2)
-    ax.plot([B[0], C[0]], [B[1], C[1]], 'k-', linewidth=2)
-    ax.plot([C[0], D[0]], [C[1], D[1]], 'k-', linewidth=2)
-    ax.plot([D[0], A[0]], [D[1], A[1]], 'k-', linewidth=2)
+    ax.plot([A[0], B[0]], [A[1], B[1]], 'k-', linewidth=2,label="Line AB")
+    ax.plot([B[0], C[0]], [B[1], C[1]], 'k-', linewidth=2, label="Line BC")
+    ax.plot([C[0], D[0]], [C[1], D[1]], 'k-', linewidth=2, label="Line CD")
+    ax.plot([D[0], A[0]], [D[1], A[1]], 'k-', linewidth=2, label="Line DA")
+    ax.text(A[0], A[1], "A", fontsize=12)
+    ax.text(B[0], B[1], "B", fontsize=12)
+    ax.text(C[0], C[1], "C", fontsize=12)
+    ax.text(D[0], D[1], "D", fontsize=12)
+
 
     # Step 2: Draw diagonal BD
     BD_length = s * np.sqrt(2)
@@ -114,6 +151,10 @@ def draw_square_to_triangle(step):
         ax.plot([F[0], G[0]], [F[1], G[1]], 'g-', linewidth=2, label="FG")
         ax.plot([G[0], H[0]], [G[1], H[1]], 'g-', linewidth=2, label="GH")
         ax.plot([H[0], E[0]], [H[1], E[1]], 'g-', linewidth=2, label="HE")
+        ax.text(E[0], E[1], "E", fontsize=12)
+        ax.text(F[0], F[1], "F", fontsize=12)
+        ax.text(G[0], G[1], "G", fontsize=12)
+        ax.text(H[0], H[1], "H", fontsize=12)
 
     # Step 4: Find midpoint J of EF
     J = ((E[0] + F[0]) / 2, (E[1] + F[1]) / 2)
@@ -128,10 +169,13 @@ def draw_square_to_triangle(step):
     # Step 6: Final Triangle JHG
     if step >= 6:
         ax.fill([J[0], H[0], G[0]], [J[1], H[1], G[1]], 'b', alpha=0.3, label="Triangle JHG")
+        ax.text(J[0], J[1], "J", fontsize=12)
+        ax.text(H[0], H[1], "H", fontsize=12)
+        ax.text(G[0], G[1], "G", fontsize=12)
 
     plt.legend()
     img_io = io.BytesIO()
-    plt.savefig(img_io, format='png', bbox_inches='tight')
+    plt.savefig(img_io, format='png')
     img_io.seek(0)
     encoded_img = base64.b64encode(img_io.getvalue()).decode('utf-8')
     plt.close(fig)
@@ -211,6 +255,11 @@ def draw_square_to_pentagon(step):
     return encoded_img
 
 
+
+
+
+
+
 @app.route('/generate', methods=['POST', 'GET'])
 def generate():
     if request.method == 'POST':
@@ -232,17 +281,18 @@ def generate():
         if shape == "square":
              shloka = "चतुरस्त्रं चिकिर्षन् यावच्चिकिर्षेत्तावती रज्जुमुभयतः पाशां कृत्वा मध्ये लक्षणं करोति लेखामालिख्य । 1.22.तस्या मध्ये शङ्कुं निहन्यात् तस्मिन् पाशौ प्रतिमुच्य लक्षणेन मण्डलं परिलिखेत् विष्कम्भान्तायोः शङ्कु निहन्यात्। 1.23. पूर्वस्मिन्  पाशं प्रतिमुच्य पाशेन मण्डलं परिलिखेत् । 1.24. एवमपरस्मिस्ते तत्र समेयातां तेन द्वितीयं विष्कम्भमायच्छेत्। 1.25. विष्कम्भान्तायोः शङ्कू निहन्यात् । 1.26. पूर्वस्मिन् पाशौ प्रतिमुच्य लक्षणेन मण्डलं परिलिखेत्। 1.27. एवं दक्षिणत एवं पश्चादेवमुत्तरतस्तेषाम् येन अन्त्याः संसर्गास्तच्चतुरस्त्र संपद्यते। 1.28"
              reference = "Baudhāyana Śulba Sūtra, 1.22 - 28"
-             explanation = "This construction follows the principles of Śulba Sūtras, utilizing geometric methods to derive perfect shapes."
+             explanation = "This construction follows the principles of Śulba Sūtras, utilizing geometric methods to derive perfect square. Using the process of construction of square from circle , based on Sulba Sutra method of Pegs and rope in digital format,Draw a horizontal base line between points E and W. Mark the midpoint M and draw a circle around it. Draw two more circles from points E and W., The intersection of these circles gives the vertical line NS.Draw four more circles from points E, W, N, and S.The intersections of these circles form the square corners."
              
              steps = [
-                "1. Draw a horizontal base line between points E and W.",
-                "2. Mark the midpoint M and draw a circle around it.",
-                "3. Draw two more circles from points E and W.",
-                "4. The intersection of these circles gives the vertical line NS.",
-                "5. Draw four more circles from points E, W, N, and S.",
-                "6. The intersections of these circles form the square corners."
+                "1. Draw the vertical center line AB",
+                "2.  Draw circles centered at A and B with radius AB.",
+                "3. Draw the horizontal line MN ",
+                "4. Place points C and D such that AB = CD",
+                "5. Draw circles centered at A, B, C, and D ",
+                "6. Find intersection points E, F, G, H",
+                "7. Join EFGH to form the final square"
             ]
-             for i in range(1, 7):
+             for i in range(1, 8):
                 images.append(draw_square(i))
 
         elif shape.strip() == "square_to_triangle":
@@ -260,10 +310,11 @@ def generate():
             ]  
             for i in range(1, 7):
                 images.append(draw_square_to_triangle(i))
+
         elif shape.strip().lower() == "square_to_pentagon":
               shloka = "पादेष्टकाश्चतुर्भिः परिगृह्णीयात्। 4.5 , अर्धपदेन पदेनाध्यर्धपदेन पद स विशेषेणेति । 4.6 ते द्वे यथा दीर्घसश्लिष्टे त्यातां तथार्धेष्टकां कारयेत्। 4.7"
               reference = "Baudhāyana Śulba Sūtra, 4.5 - 4.7"
-              explanation = "This method constructs a pentagon using geometric principles derived from the Śulba Sūtras."
+              explanation = "This method constructs a pentagon using geometric principles derived from the Śulba Sūtras. Draw square ABCD. Draw diagonal BD. Construct a square EFGH with side length equal to BD. Find midpoint J of EH and midpoint K of FG. Divide EF and HG in the required proportion to get points L and M. Divide line JK in the required proportion to get point N. Join LN and MN to form the final pentagon FLNMG."
             #   print("Processing square_to_pentagon...") 
               steps = [
                 "1. Draw square ABCD.",
@@ -277,6 +328,23 @@ def generate():
               for i in range(1, 8):
                 images.append(draw_square_to_pentagon(i))  
           
+        # elif shape.strip() == "square_to_circle":
+        #       shloka = "वर्गं वृत्तं कुर्वीत ... (your Sanskrit text here)"
+        #       reference = "Baudhāyana Śulba Sūtra, 1.xx"
+        #       explanation = "This transformation explains the conversion of a square into a circle ... (your explanation here)"
+
+        #       steps = [
+        #         "1. Draw square ABCD.",
+        #         "2. Draw diagonal AC.",
+        #         "3. Mark midpoint E of AC.",
+        #         "4. Draw arc with E as center and AE as radius.",
+        #         "5. Locate F where arc intersects center line.",
+        #         "6. Divide FH such that FG = 2GH.",
+        #         "7. Draw final circle with center E and radius EG."
+        #     ]
+    
+        #       for i in range(1, 8):
+        #         images.append(draw_square_to_circle())
 
        
                
@@ -289,10 +357,10 @@ def generate():
         zipped_data = zip(images, steps)
         
         return render_template('result.html', 
-                                 zipped_data=list(zipped_data), 
-                                 shloka=shloka, 
-                                 reference=reference, 
-                                 explanation=explanation)
+                                zipped_data=list(zipped_data), 
+                                shloka=shloka, 
+                                reference=reference, 
+                                explanation=explanation)
 
 
 
