@@ -230,8 +230,8 @@ def generate():
         
 
         if shape == "square":
-             shloka = "शुल्बसूत्रे निर्दिष्टाह स्क्वेर निर्माण कर्मा"
-             reference = "Baudhāyana Śulba Sūtra, 1.2"
+             shloka = "चतुरस्त्रं चिकिर्षन् यावच्चिकिर्षेत्तावती रज्जुमुभयतः पाशां कृत्वा मध्ये लक्षणं करोति लेखामालिख्य । 1.22.तस्या मध्ये शङ्कुं निहन्यात् तस्मिन् पाशौ प्रतिमुच्य लक्षणेन मण्डलं परिलिखेत् विष्कम्भान्तायोः शङ्कु निहन्यात्। 1.23. पूर्वस्मिन्  पाशं प्रतिमुच्य पाशेन मण्डलं परिलिखेत् । 1.24. एवमपरस्मिस्ते तत्र समेयातां तेन द्वितीयं विष्कम्भमायच्छेत्। 1.25. विष्कम्भान्तायोः शङ्कू निहन्यात् । 1.26. पूर्वस्मिन् पाशौ प्रतिमुच्य लक्षणेन मण्डलं परिलिखेत्। 1.27. एवं दक्षिणत एवं पश्चादेवमुत्तरतस्तेषाम् येन अन्त्याः संसर्गास्तच्चतुरस्त्र संपद्यते। 1.28"
+             reference = "Baudhāyana Śulba Sūtra, 1.22 - 28"
              explanation = "This construction follows the principles of Śulba Sūtras, utilizing geometric methods to derive perfect shapes."
              
              steps = [
@@ -246,9 +246,9 @@ def generate():
                 images.append(draw_square(i))
 
         elif shape.strip() == "square_to_triangle":
-            shloka = "त्रिकोणं चतुर्भुजस्य विशिष्ट रूपं"
-            reference = "Baudhāyana Śulba Sūtra, 1.3"
-            explanation = "This transformation from square to triangle is based on geometric dissection principles."
+            shloka = "चतुरस्रं प्रउगं चिकीर्षन् यावच्चिकीर्षेद् द्विस्तावतीं भूमिः समचतुरस्त्रां कृत्वा पूर्वस्याः करण्या मध्ये शङ्कुं निहन्यात् तस्मिन् पाशौ प्रतिमुच्य दक्षिणोत्तरयोः श्रोण्योर्निपातयेत् बहिस्पन्द्यमपच्छिन्द्यात्।"
+            reference = "Baudhāyana Śulba Sūtra, 1.56"
+            explanation = "This transformation from square to triangle is based on geometric dissection principles. In this construction , we learnt about transformation of square into triangle of equal area. Draw square ABCD. Draw diagonal BD, Construct square EFGH, with side lenght equal to BD. Find midpoint J of EF. Join JH and JG. Final Triangle JHG."
      
             steps = [
                 "1. Draw square ABCD.",
@@ -261,8 +261,8 @@ def generate():
             for i in range(1, 7):
                 images.append(draw_square_to_triangle(i))
         elif shape.strip().lower() == "square_to_pentagon":
-              shloka = "पञ्चकोणः विशेषं रूपं गणितशास्त्रे"
-              reference = "Baudhāyana Śulba Sūtra, 1.4"
+              shloka = "पादेष्टकाश्चतुर्भिः परिगृह्णीयात्। 4.5 , अर्धपदेन पदेनाध्यर्धपदेन पद स विशेषेणेति । 4.6 ते द्वे यथा दीर्घसश्लिष्टे त्यातां तथार्धेष्टकां कारयेत्। 4.7"
+              reference = "Baudhāyana Śulba Sūtra, 4.5 - 4.7"
               explanation = "This method constructs a pentagon using geometric principles derived from the Śulba Sūtras."
             #   print("Processing square_to_pentagon...") 
               steps = [
