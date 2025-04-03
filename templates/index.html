@@ -1,32 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Sulba Sutra Geometry</title>
-        
-        <!-- Load CSS First -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sulba Sutra Geometry</title>
     
-        <!-- Optional: Add a Preload Hint -->
-        <link rel="preload" href="{{ url_for('static', filename='styles.css') }}" as="style">
-        <style>
-            /* Hide the body initially */
-            body {
-                visibility: hidden;
-                opacity: 0;
-                transition: opacity 0.5s ease-in-out; /* Smooth fade-in */
-            }
-        </style>
-        
-        <script src="{{ url_for('static', filename='script.js') }}" defer></script>
-        
-        
-    </head>
+    <!-- Load CSS First -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
     
+    <!-- Preload Hint for Faster Styling -->
+    <link rel="preload" href="{{ url_for('static', filename='styles.css') }}" as="style">
+
+    <style>
+        /* Hide content initially for fade-in effect */
+        body {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #fbc531, #e84118); /* Two-shade background */
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Loader Styles */
+        #loader {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Container Styling */
+        .container {
+            width: 40%;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Form Styling */
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        select {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            margin: 10px 0;
+        }
+
+        /* Button Styling */
+        button {
+            background-color: #79ce29; /* Green Button */
+            color: white;
+            padding: 12px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #e84118; /* Darker Red */
+        }
+    </style>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Fade in the page after styles load
+            document.body.style.visibility = "visible";
+            document.body.style.opacity = "1";
+
+            // Hide loader after loading
+            setTimeout(function () {
+                document.getElementById("loader").style.display = "none";
+            }, 1000);
+        });
+    </script>
+
+</head>
 <body>
+    <div id="loader">
+        <p>Loading...</p>
+    </div>    
+
     <div class="container">
-        <h1>Geometry Construction Visualizer</h1>
+        <h1>Geometry Construction Visualizer-Śulbāstra</h1>
         
         <!-- Shape Selection Form -->
         <form method="POST" action="/generate">
@@ -39,21 +123,6 @@
             </select>
             <button type="submit">Generate</button>
         </form>        
-
-        <!-- Display Generated Diagram and Steps -->
-        {% if zipped_data %}
-            <div class="output">
-                {% for image, step in zipped_data %}
-                    <div class="step">
-                        <img src="data:image/png;base64,{{ image }}" alt="Step Diagram" />
-                        <p>{{ step }}</p>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
     </div>
-    <div id="loader">
-        <p>Loading...</p>
-    </div>    
 </body>
 </html>
