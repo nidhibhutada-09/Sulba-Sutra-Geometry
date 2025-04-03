@@ -4,8 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Result - Geometry Construction</title>
+
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(to right, #2c3e50, #4ca1af); /* Two-color gradient */
+            color: white; /* Text color */
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #facb0f; /* Gold color for headings */
+        }
+
+        div {
+            background: rgba(255, 255, 255, 0.2); /* Slightly transparent box */
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            width: 80%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        img {
+            max-width: 100%;
+            border: 2px solid white;
+            border-radius: 10px;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #f1c40f;
+            color: black;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        a:hover {
+            background: #e67e22;
+        }
+    </style>
+
 </head>
 <body>
+
     <h1>Construction Steps</h1>
 
     {% for image, step in zipped_data %}
@@ -17,16 +63,23 @@
 
     <!-- Shloka, Reference, and Explanation at the End -->
     <div>
-        <h2>Shloka</h2>
-        <p>{{ shloka }}</p>
-
-        <h2>Reference</h2>
-        <p>{{ reference }}</p>
-
-        <h2>Explanation</h2>
-        <p>{{ explanation }}</p>
+        {% if shloka %}
+            <h2>Shloka</h2>
+            <p>{{ shloka }}</p>
+        {% endif %}
+        
+        {% if reference %}
+            <h2>Reference</h2>
+            <p>{{ reference }}</p>
+        {% endif %}
+        
+        {% if explanation %}
+            <h2>Explanation</h2>
+            <p>{{ explanation }}</p>
+        {% endif %}    
     </div>
 
     <a href="/">Go back</a>
+
 </body>
 </html>

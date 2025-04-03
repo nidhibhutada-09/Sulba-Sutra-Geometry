@@ -1,11 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sulba Sutra Geometry</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sulba Sutra Geometry</title>
+        
+        <!-- Load CSS First -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+    
+        <!-- Optional: Add a Preload Hint -->
+        <link rel="preload" href="{{ url_for('static', filename='styles.css') }}" as="style">
+        <style>
+            /* Hide the body initially */
+            body {
+                visibility: hidden;
+                opacity: 0;
+                transition: opacity 0.5s ease-in-out; /* Smooth fade-in */
+            }
+        </style>
+        
+        <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+        
+        
+    </head>
+    
 <body>
     <div class="container">
         <h1>Geometry Construction Visualizer</h1>
@@ -17,7 +35,7 @@
                 <option value="" disabled selected>Select a shape</option>
                 <option value="square">Square</option>
                 <option value="square_to_triangle">Square to Triangle</option>
-                <option value="square_to_pentagon">Square_to_Pentagon</option>
+                <option value="square_to_pentagon">Square to Pentagon</option>
             </select>
             <button type="submit">Generate</button>
         </form>        
@@ -34,5 +52,8 @@
             </div>
         {% endif %}
     </div>
+    <div id="loader">
+        <p>Loading...</p>
+    </div>    
 </body>
 </html>
