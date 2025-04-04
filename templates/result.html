@@ -62,24 +62,35 @@
     {% endfor %}
 
     <!-- Shloka, Reference, and Explanation at the End -->
-    <div>
-        {% if shloka %}
-            <h2>Shloka</h2>
-            <p>{{ shloka }}</p>
-        {% endif %}
-        
-        {% if reference %}
-            <h2>Reference</h2>
-            <p>{{ reference }}</p>
-        {% endif %}
-        
-        {% if explanation %}
-            <h2>Explanation</h2>
-            <p>{{ explanation }}</p>
-        {% endif %}    
-    </div>
+<div>
+    <style>
+        .shloka-text {
+            color: #050505; /* Purple */
+        }
 
-    <a href="/">Go back</a>
+        .reference-text {
+            color: #050505; /* Blue */
+        }
 
-</body>
-</html>
+        .explanation-text {
+            color: #050505; /* Green */
+        }
+    </style>
+
+    {% if shloka %}
+        <h2>Shloka</h2>
+        <p class="shloka-text">{{ shloka }}</p>
+    {% endif %}
+    
+    {% if reference %}
+        <h2>Reference</h2>
+        <p class="reference-text">{{ reference }}</p>
+    {% endif %}
+    
+    {% if explanation %}
+        <h2>Explanation</h2>
+        <p class="explanation-text">{{ explanation }}</p>
+    {% endif %}    
+</div>
+
+<a href="/">Go back</a>

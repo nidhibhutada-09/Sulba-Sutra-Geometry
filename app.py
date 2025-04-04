@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, url_for, Response
-app = Flask(__name__, static_folder='static')
 import numpy as np
 import matplotlib.pyplot as plt
 import io
@@ -12,15 +11,13 @@ matplotlib.use('Agg')
 
 app = Flask(__name__, static_folder='static')
 
+
 @app.route('/', methods=['GET', 'HEAD'])
 def home():
     if request.method == 'HEAD':
-        return Response(status=200)  # Return an empty response with HTTP 200 for HEAD requests
+        return Response(status=200)
     return render_template('index.html')
 
-
-import matplotlib.pyplot as plt
-import numpy as np
 
 def draw_square(step):
     fig, ax = plt.subplots(figsize=(10, 10))  # Increased figure size
@@ -91,20 +88,17 @@ def draw_square(step):
         ax.plot([H[0], E[0]], [H[1], E[1]], 'b-', linewidth=2)
 
     plt.legend()
-    plt.show()
+
 
 # Call the function with the desired step
 # draw_square(7)
 
     
-    # Save image to memory buffer and encode in base64
     img_io = io.BytesIO()
     plt.savefig(img_io, format='png', bbox_inches='tight')
     img_io.seek(0)
     encoded_img = base64.b64encode(img_io.getvalue()).decode('utf-8')
     plt.close(fig)  # Close figure to free memory
-    draw_square(7)
-
     return encoded_img
 
 
@@ -112,7 +106,7 @@ def draw_square_to_triangle(step):
     plt.clf() # clear previous plot
     fig, ax = plt.subplots(figsize=(6, 6))
     ax.set_xlim(-3, 15)
-    ax.set_ylim(-3, 20)
+    ax.set_ylim(-3, 25)
     ax.set_aspect(1)
     plt.title(f"Transforming Square to Triangle - Step {step}")
 
@@ -199,13 +193,16 @@ def draw_square_to_pentagon(step):
     ax.plot([B[0], C[0]], [B[1], C[1]], 'k-', linewidth=2)
     ax.plot([C[0], D[0]], [C[1], D[1]], 'k-', linewidth=2)
     ax.plot([D[0], A[0]], [D[1], A[1]], 'k-', linewidth=2)
-
+    ax.text(A[0], A[1], "A", fontsize=12)
+    ax.text(B[0], B[1], "B", fontsize=12)
+    ax.text(C[0], C[1], "C", fontsize=12)
+    ax.text(D[0], D[1], "D", fontsize=12)
     # Step 2: Draw diagonal BD
     BD_length = s * np.sqrt(2)
     B, D = (0, 0), (s, s)
     if step >= 2:
         ax.plot([B[0], D[0]], [B[1], D[1]], 'b-', linewidth=2, label="Diagonal BD")
-
+        
     # Step 3: Construct Square EFGH with side BD
     E = (7, 0)
     F = (E[0] + BD_length, E[1])
@@ -216,25 +213,31 @@ def draw_square_to_pentagon(step):
         ax.plot([F[0], G[0]], [F[1], G[1]], 'g-', linewidth=2)
         ax.plot([G[0], H[0]], [G[1], H[1]], 'g-', linewidth=2)
         ax.plot([H[0], E[0]], [H[1], E[1]], 'g-', linewidth=2)
-
+        ax.text(E[0], E[1], "E", fontsize=12)
+        ax.text(F[0], F[1], "F", fontsize=12)
+        ax.text(G[0], G[1], "G", fontsize=12)
+        ax.text(H[0], H[1], "H", fontsize=12)
     # Step 4: Find midpoints J and K
     J = ((E[0] + H[0]) / 2, (E[1] + H[1]) / 2)
     K = ((F[0] + G[0]) / 2, (F[1] + G[1]) / 2)
     if step >= 4:
         ax.plot(J[0], J[1], 'ro', markersize=5, label="Midpoint J")
         ax.plot(K[0], K[1], 'ro', markersize=5, label="Midpoint K")
-
+        ax.text(J[0], J[1], "J", fontsize=12)
+        ax.text(K[0], K[1], "K", fontsize=12)
     # Step 5: Divide EF and HG into required proportions to find L and M
     L = (E[0] + (F[0] - E[0]) * 0.3, E[1])
     M = (H[0] + (G[0] - H[0]) * 0.3, H[1])
     if step >= 5:
         ax.plot(L[0], L[1], 'bo', markersize=5, label="Point L")
         ax.plot(M[0], M[1], 'bo', markersize=5, label="Point M")
-
+        ax.text(L[0], L[1], "L", fontsize=12)
+        ax.text(M[0], M[1], "M", fontsize=12)
     # Step 6: Divide JK into required proportion to find N
     N = (J[0] + (K[0] - J[0]) * 0.5, J[1] + (K[1] - J[1]) * 0.5)
     if step >= 6:
         ax.plot(N[0], N[1], 'bo', markersize=5, label="Point N")
+        ax.text(N[0], N[1], "N", fontsize=12)
 
     # Step 7: Draw Pentagon FLNMG
     if step >= 7:
@@ -267,7 +270,6 @@ def generate():
 
         if not shape:
             return "Shape not selected. Please choose a shape."
-
         # Debugging: Print the value of 'shape'
         print(f"Shape received: {shape.strip()}")  # This will print in your terminal/log
 
@@ -354,6 +356,8 @@ def generate():
         print("Final Shloka:", repr(shloka))
         print("Final Reference:", repr(reference))
         print("Final Explanation:", repr(explanation))
+        print(f"Shape received: {shape.strip()}")
+
         zipped_data = zip(images, steps)
         
         return render_template('result.html', 
