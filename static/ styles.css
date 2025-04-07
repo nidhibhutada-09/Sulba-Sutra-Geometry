@@ -2,7 +2,7 @@
 body {
     font-family: 'Poppins', sans-serif; /* Change font */
     background: linear-gradient(to right, #fbc531, #e84118); /* Gradient background */
-    color: #222; /* Text color */
+    color: #ece9e9; /* Text color */
     text-align: center;
     margin: 0;
     padding: 0;
@@ -43,7 +43,7 @@ select {
 /* Button Styling */
 button {
     background-color: #79ce29; /* green button */
-    color: white;
+    color: rgb(30, 224, 79);
     padding: 12px 20px;
     font-size: 18px;
     border: none;
@@ -89,3 +89,34 @@ img {
 body.loaded #loader {
     display: none;
 }
+/* Reference Styling */
+.reference {
+    color: #030303; /* light yellow */
+    animation: fadeIn 1.5s ease;
+}
+/* Animate on Load */
+.animated-image {
+    animation: fadePop 1.5s ease-in-out;
+    transition: transform 0.3s ease;
+}
+
+/* On Hover Animation */
+.animated-image:hover {
+    transform: scale(1.05); /* Slight zoom */
+}
+
+/* Animation Keyframes */
+@keyframes fadePop {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+

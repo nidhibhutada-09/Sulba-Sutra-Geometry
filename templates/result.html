@@ -57,7 +57,7 @@
     {% for image, step in zipped_data %}
         <div>
             <h2>{{ step }}</h2>
-            <img src="data:image/png;base64,{{ image }}" alt="Step Image">
+            <img src="data:image/png;base64,{{ image }}" alt="Step Image" class="animated-image">
         </div>
     {% endfor %}
 
